@@ -1,0 +1,6 @@
+To install IPFS goto:
+https://dist.ipfs.io/#go-ipfs
+
+To install python3 ipfsapi
+pip3 install ipfsapi
+
