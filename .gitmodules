@@ -1,0 +1,3 @@
+[submodule "submodule/hydrus-api"]
+	path = submodule/hydrus-api
+	url = https://gitlab.com/cryzed/hydrus-api.git
