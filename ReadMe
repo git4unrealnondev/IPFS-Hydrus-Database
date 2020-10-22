@@ -21,3 +21,8 @@ Run the python3 script using python3 ./main.py
 If you get an error 405 error then you should try installing the IPFS py client from:
 https://github.com/ipfs-shipyard/py-ipfs-http-client
 
+You might need to edit conf.json to make things work correctly.
+
+once main.py has been configured and ran then you just type: python3 ./download.py and it should download everything
+
+It Should "Just Work TM"
