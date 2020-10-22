@@ -1,20 +1,24 @@
 import ipfshttpclient
 
+import json
 
-
+def makeConnection():
+	return ipfshttpclient.connect('/ip4/127.0.0.1/tcp/5001')
+	
+if __name__ == '__main__':
+	makeConnection()
+	dison = {}
+	dison["A"] = "B"
+	dison["C"] = "D"
+	lkj = json.dumps(dison)
+	file = open("json.txt", "w")
+	file.write(json.dumps(dison))
+	file.close()
+	print (lkj)
 # Share TCP connections using a context manager
 with ipfshttpclient.connect('/ip4/127.0.0.1/tcp/5001') as client:
 	hash = client.add('test.txt')['Hash']
-	print(client.stat(hash))
-
-# Share TCP connections until the client session is closed
-class SomeObject:
-	def __init__(self):
-		self._client = ipfshttpclient.connect(session=True)
-
-	def do_something(self):
-		hash = self._client.add('test.txt')['Hash']
-		print(self._client.stat(hash))
-
-	def close(self):  # Call this when your done
-		self._client.close()
+	key =client.object.put("HYDRUSDB-FILE")
+	print(key)
+	print(key["Hash"])
+	

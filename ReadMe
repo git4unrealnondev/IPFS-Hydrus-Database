@@ -16,4 +16,8 @@ To connect your machine to the ipfs network type ipfs daemon
 
 You should now be able to connect to your WebUI on http://127.0.0.1:5001/webui
 
+Run the python3 script using python3 ./main.py
+
+If you get an error 405 error then you should try installing the IPFS py client from:
+https://github.com/ipfs-shipyard/py-ipfs-http-client
 
