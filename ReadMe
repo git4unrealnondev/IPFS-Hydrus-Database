@@ -4,3 +4,16 @@ https://dist.ipfs.io/#go-ipfs
 To install python3 ipfsapi
 pip3 install ipfsapi
 
+Install IPFS by running install.sh
+
+To test ipfs run: ipfs --version
+
+If it returns: ipfs version ###### Then everything is okay
+
+To init your IPFS node type ipfs init
+
+To connect your machine to the ipfs network type ipfs daemon
+
+You should now be able to connect to your WebUI on http://127.0.0.1:5001/webui
+
+
