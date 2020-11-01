@@ -29,15 +29,19 @@ r = client.cat("/ipns/"+ipns)
 #print (json.loads(r))
 ipfsHash = []
 ipfsDict = {}
-for each in json.loads(r):
+try:
+
+	for each in json.loads(r):
 	
-	ipfsDict[each] = json.loads(r)[each]
-	
+		ipfsDict[each] = json.loads(r)[each]
+except:
+	print ("Not enough json :D")	
+	quit()
 #print (ipfsDict)
 a = open("tags.txt", "w")
 for each in ipfsDict:
 	print ("Downloading: " + str(each))
 	client.get(each)
-	a.write(str(each) + "," + listToString(ipfsDict[each]))
+	a.write(str(each) + "," + listToString(ipfsDict[each]) + "\n")
 a.close()
 

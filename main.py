@@ -39,9 +39,21 @@ class IPFS():
 		#print (json.dumps(aList["Keys"]).keys())
 		
 	def createKey(self):
-		key = self.client.key.gen(type="rsa", size=4096, key_name="HydrusDB")
-		return key["Id"]
+		try:
+			key = self.client.key.gen(type="rsa", size=4096, key_name="HydrusDB")
+			return key["Id"]
+		except:
+			keyEx = self.client.key.list()["Keys"]
+			lis = []
+			for each in keyEx:
+				if each["Name"] == "HydrusDB":
+					return each["Id"]
+			#print (keyEx["Keys"].values())
+			quit()
 	def jsonPin(self):
+		if not os.path.exists("hashTags.json"):
+			hsh = open("hashTags.json", "w")
+			hsh.close()
 		self.jsonRef = self.client.add("hashTags.json", pin = True)["Hash"]
 		#print (self.jsonRef)
 		
@@ -50,7 +62,7 @@ class IPFS():
 		print ("IPNS Name is: ",publish["Name"])
 class hydrusSetup():
 	access_key = None
-	ip = "127.0.0.1"
+	ip = "localhost"
 	port = 45869
 	conf = "conf.json"
 	searchParams = []
@@ -80,9 +92,9 @@ class hydrusSetup():
 			dison["access_key"] = self.access_key
 			dison["ip"] = self.ip
 			dison["port"] = self.port
-			dison["ipfsKey"] = IPFSObj.createKey()
+			dison["ipfsKey"] = self.IPFSObj.createKey()
 			print ("Please enter the search terms that you would like hydrus to automatically pin to ipfs.")
-			self.searchParams = input("Comma Seperated: ")
+			self.searchParams = input("Space Seperated: ")
 			dison["searchParams"] = self.searchParams.split()
 			print ("Please enter the absolute Location of your hydrus database. (Where Client File is.)")
 			print ("Cannot use ~ to shorten /home/username/")
@@ -98,6 +110,8 @@ class hydrusSetup():
 		print ()
 		
 		self.searchTags()
+		
+		
 		
 		self.pinFiles()
 	
@@ -135,6 +149,7 @@ class hydrusSetup():
 			quit()
 			
 	def searchTags(self):
+		print ("Access Key ",self.access_key)
 		ReqHeader = {'Hydrus-Client-API-Access-Key': str(self.access_key)}
 
 		try:
@@ -164,6 +179,7 @@ class hydrusSetup():
 				headers=ReqHeader)
 			except:
 				print ("A mysterious error has occured lel")
+				print (r.content)
 			F = json.loads(r.content)
 			f = F["metadata"]
 			self.hashes = []
@@ -176,16 +192,21 @@ class hydrusSetup():
 				
 				self.tags.append(list(each["service_names_to_statuses_to_tags"]["my tags"].values())[0])
 			print ("Pulled: " + str(len(self.hashes)) + " Hashes from Hydrus.")
-
+			print ("Pinning to IPNS Please Wait")
 			return
 	
 	def initialConnect(self):
 		ReqHeader = {'User-Agent': 'Hydrus Utilize - Mobile'}
 		try:
-			r = requests.get('http://' + str(self.ip) + ':' + self.port + '/request_new_permissions?' + 
+			r = requests.get('http://' + str(self.ip) + ':' + str(self.port) + '/request_new_permissions?' + 
 				'name=Hydrus%20IPFS%20Searcher&basic_permissions=[0,1,2,3,4]', 
 				headers=ReqHeader)
-		except:
+			
+		except Exception as a:
+			
+			if a != None:
+				print ("ERROR: ", a)
+				quit()
 			print ("Error Connecting to client: is it currently accepting API Requests?")
 			print ("Go to Services -> Manage Services -> Client API and uncheck do not run client service.")
 			quit()
@@ -197,7 +218,8 @@ class hydrusSetup():
 			self.access_key = json.loads(r.content)["access_key"]
 			return
 			
-			
+		
+
 
 ## Share TCP connections using a context manager
 #with ipfshttpclient.connect('/ip4/127.0.0.1/tcp/5001') as client:
